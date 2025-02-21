@@ -1,9 +1,12 @@
+# backend/main.py
+
 import os
 from fastapi import FastAPI
 from dotenv import load_dotenv
 from db import db
 from resume_router import resume_router
 from user_router import user_router
+from job_router import job_router
 
 load_dotenv()  # Take environment variables from .env
 
@@ -14,7 +17,7 @@ app = FastAPI()
 
 app.include_router(resume_router, prefix="/resumes", tags=["resumes"])
 app.include_router(user_router, prefix="/users", tags=["users"])
-
+app.include_router(job_router, prefix="/jobs", tags=["jobs"])
 
 @app.get("/")
 def read_root():

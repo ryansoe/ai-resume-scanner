@@ -9,7 +9,8 @@ from bson import ObjectId
 import io
 import os
 from db import db
-from user_router import get_current_user  # The dependency we created
+from user_router import get_current_user
+import json
 
 resume_router = APIRouter()
 
@@ -121,14 +122,75 @@ def get_my_resumes(current_user: dict = Depends(get_current_user)):
     
     return {"username": current_user["username"], "resumes": user_resumes}
 
+
+@resume_router.post("/extract-skills/bulk")
+def extract_skills_bulk(current_user: dict = Depends(get_current_user)):
+    """
+    Extract skills for all resumes belonging to the current user (bulk).
+    Ensures the final 'skills' field is a list of strings.
+    """
+    user_resumes = list(db.resumes.find({"user_id": str(current_user["_id"])}))
+    openai.api_key = os.getenv("OPENAI_API_KEY")
+    if not openai.api_key:
+        raise HTTPException(status_code=500, detail="OpenAI API key not configured")
+
+    updated_count = 0
+
+    for res in user_resumes:
+        resume_text = res.get("resume_text", "")
+        if not resume_text.strip():
+            continue
+
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {
+                        "role": "system",
+                        "content": (
+                            "You are an AI assistant that extracts professional skills "
+                            "from the following resume text. "
+                            "Return ONLY a strict JSON array of strings with NO code fences, "
+                            "e.g. [\"Python\", \"SQL\", \"React\"]."
+                        )
+                    },
+                    {
+                        "role": "user",
+                        "content": resume_text
+                    }
+                ],
+                temperature=0.0
+            )
+            raw_output = response.choices[0].message.content.strip()
+
+            try:
+                extracted_skills = json.loads(raw_output)
+                if not isinstance(extracted_skills, list):
+                    extracted_skills = [raw_output]
+            except json.JSONDecodeError:
+                extracted_skills = [raw_output]
+
+            db.resumes.update_one(
+                {"_id": res["_id"]},
+                {"$set": {"skills": extracted_skills}}
+            )
+            updated_count += 1
+
+        except Exception as e:
+            print(f"Error processing resume {res['_id']}: {e}")
+
+    return {"message": "Bulk skill extraction completed", "updated_resumes": updated_count}
+
+
 @resume_router.post("/extract-skills/{resume_id}")
 def extract_skills(
     resume_id: str = Path(...),
     current_user: dict = Depends(get_current_user)
 ):
-    """Extract skills from the specified resume using OpenAI GPT."""
-
-    # 1. Fetch the resume by ID, ensure it belongs to the current user
+    """
+    Extract skills from a single resume using OpenAI GPT.
+    Ensures the final 'skills' field is a list of strings.
+    """
     resume = db.resumes.find_one({"_id": ObjectId(resume_id)})
     if not resume:
         raise HTTPException(status_code=404, detail="Resume not found")
@@ -139,50 +201,39 @@ def extract_skills(
     if not resume_text.strip():
         raise HTTPException(status_code=400, detail="Resume text is empty or missing")
 
-    # 2. Call the OpenAI API to extract skills
-    openai.api_key = openai.api_key or os.getenv("OPENAI_API_KEY")
+    openai.api_key = os.getenv("OPENAI_API_KEY")
     if not openai.api_key:
         raise HTTPException(status_code=500, detail="OpenAI API key not configured")
 
     try:
-        # -- Option A: Using ChatCompletion (GPT-3.5/4) --
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # or "gpt-4" if you have access
+            model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are an AI assistant that extracts professional skills from resumes."},
-                {"role": "user", "content": f"Resume text:\n{resume_text}\n\nExtract the skills as a list of strings."},
+                {
+                    "role": "system",
+                    "content": (
+                        "You are an AI assistant that extracts professional skills "
+                        "from the following resume text. "
+                        "Return ONLY a strict JSON array of strings with NO code fences, "
+                        "e.g. [\"Python\", \"SQL\", \"React\"]."
+                    )
+                },
+                {
+                    "role": "user",
+                    "content": resume_text
+                }
             ],
             temperature=0.0
         )
         raw_output = response["choices"][0]["message"]["content"].strip()
 
-
-
-        # -- Option B: Using Completion (older models) --
-        # response = openai.Completion.create(
-        #     model="text-davinci-003",
-        #     prompt=f"Extract professional skills from the following resume text:\n{resume_text}\n\nReturn them as a JSON list.",
-        #     temperature=0.0,
-        #     max_tokens=200
-        # )
-        # raw_output = response.choices[0].text.strip()
-
-        # 3. Parse the response content (JSON or text)
-        # Assume the model returns something like: ["Python", "SQL", "Machine Learning"]
-        # If not strictly JSON, we can parse or do a second pass to parse JSON
-        # For safety, let's attempt to parse JSON if possible:
-        import json
         try:
             extracted_skills = json.loads(raw_output)
-            # ensure it's a list
             if not isinstance(extracted_skills, list):
-                # if not a list, handle gracefully
                 extracted_skills = [raw_output]
         except json.JSONDecodeError:
-            # fallback: store raw string
             extracted_skills = [raw_output]
 
-        # 4. Update the resume document with extracted skills
         db.resumes.update_one(
             {"_id": ObjectId(resume_id)},
             {"$set": {"skills": extracted_skills}}
@@ -196,23 +247,3 @@ def extract_skills(
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
-# @resume_router.post("/extract-skills/bulk")
-# def extract_skills_bulk(current_user: dict = Depends(get_current_user)):
-#     """
-#     Extract skills from all of the current user's resumes.
-#     """
-#     user_resumes = list(db.resumes.find({"user_id": str(current_user["_id"])}))
-#     updated_count = 0
-
-#     for res in user_resumes:
-#         resume_text = res.get("resume_text", "")
-#         if not resume_text.strip():
-#             continue
-
-#         # (Same logic: call OpenAI, parse output, update DB)
-#         # ...
-#         updated_count += 1
-
-#     return {"message": "Bulk skill extraction completed", "updated_resumes": updated_count}
-
