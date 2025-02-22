@@ -1,21 +1,7 @@
-// frontend/src/App.jsx
-import { useEffect, useState } from 'react'
-
-function App() {
-  const [message, setMessage] = useState('')
-
-  useEffect(() => {
-    fetch('http://127.0.0.1:8000/')
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-  }, [])
-
+export default function App() {
   return (
-    <div>
-      <h1>AI Resume Screener</h1>
-      <p>{message}</p>
+    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+      <h1 className="text-3xl font-bold text-blue-600">AI Resume Screener</h1>
     </div>
   )
 }
-
-export default App
