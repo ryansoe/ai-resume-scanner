@@ -7,8 +7,6 @@ AI Resume Screener is a **React + FastAPI** application that streamlines the pro
  
 The site is currently **live**, allowing users to **create accounts**, **upload resumes**, **match** to jobs, and **delete** unwanted resumes – all in a clean, easy-to-use interface.
 
----
-
 ## ✨ Features
 ✅ **User Authentication** – Sign up, log in, and log out to secure your personal data.  
 ✅ **Automatic Skill Extraction** – Resumes are parsed using OpenAI, with extracted skills stored in MongoDB.  
@@ -17,8 +15,6 @@ The site is currently **live**, allowing users to **create accounts**, **upload 
 ✅ **Resume Deletion** – Remove any outdated or incorrect resumes from your profile.  
 ✅ **Intuitive UI** – A React frontend with Tailwind CSS for clean styling and easy navigation.  
 ✅ **Toast Notifications** – Get immediate feedback on login, logout, errors, and more.  
-
----
 
 ## 🚀 Technologies Used
 - **Python FastAPI** – Backend web framework  
@@ -31,8 +27,6 @@ The site is currently **live**, allowing users to **create accounts**, **upload 
 - **React Toastify** – Toast notifications for user feedback  
 
 *(In the future, we plan to integrate **PyTorch** for advanced matching and ML features.)*
-
----
 
 ## 📖 How It Works
 
@@ -58,8 +52,6 @@ The site is currently **live**, allowing users to **create accounts**, **upload 
 6. **Toast Notifications**  
    - On login, logout, and key actions, to give immediate user feedback.
 
----
-
 ## 🏗 Future Improvements
 - **PyTorch Model for Enhanced Matching**  
   - Integrate a skill categorization or semantic matching model to improve job ranking accuracy.  
@@ -70,7 +62,6 @@ The site is currently **live**, allowing users to **create accounts**, **upload 
 - **Caching and Optimization**  
   - Reduce repeated OpenAI calls by caching embeddings or skill sets.
 
----
 
 ## 👨‍💻 Author
 **Ryan Soe**
