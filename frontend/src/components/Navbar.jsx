@@ -1,11 +1,13 @@
 // src/components/Navbar.jsx
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function Navbar() {
     const navigate = useNavigate()
 
     const handleSignOut = () => {
       localStorage.removeItem('token') // remove JWT
+      toast.info('Signed out successfully.')
       navigate('/login')              // redirect to login
     }   
 
@@ -13,7 +15,7 @@ export default function Navbar() {
     <nav className="bg-white shadow-md">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <Link to="/" className="text-xl font-bold">
-          AI Resume Screener
+          Resume Scanner
         </Link>
         <div className="space-x-4">
           <Link to="/login" className="text-gray-700 hover:text-blue-600">

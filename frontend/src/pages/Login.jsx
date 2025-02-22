@@ -1,6 +1,7 @@
 // src/pages/Login.jsx
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -30,9 +31,11 @@ export default function Login() {
       const data = await res.json()
       // store token
       localStorage.setItem('token', data.access_token)
+      toast.success('Logged in successfully!')
       navigate('/')
     } catch (err) {
       setError(err.message)
+      toast.error(err.message)
     }
   }
 

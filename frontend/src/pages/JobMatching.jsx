@@ -1,5 +1,4 @@
 // src/pages/JobMatching.jsx
-
 import { useState } from 'react'
 
 export default function JobMatching() {
@@ -37,7 +36,7 @@ export default function JobMatching() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Authorization: `Bearer ${token}`
         },
         body: JSON.stringify(jobData)
       })
@@ -46,8 +45,8 @@ export default function JobMatching() {
         throw new Error(createData.detail || 'Failed to create job')
       }
 
-      setMessage(createData.message)    // e.g. "Job created and skills extracted successfully"
-      setJobId(createData.job_id)       // Save the newly created job_id
+      setMessage(createData.message) // e.g. "Job created and skills extracted successfully"
+      setJobId(createData.job_id)    // Save the newly created job_id
 
       // 2. Match Resumes
       const matchRes = await fetch(`http://127.0.0.1:8000/jobs/match/${createData.job_id}`, {
@@ -62,7 +61,7 @@ export default function JobMatching() {
       }
 
       // Display the matched resumes
-      setRankedResumes(matchData.matches)  // e.g. an array of resumes with scores
+      setRankedResumes(matchData.matches) // e.g. an array of resumes with scores
 
     } catch (err) {
       setError(err.message)
@@ -110,7 +109,7 @@ export default function JobMatching() {
           <table className="w-full border">
             <thead className="bg-gray-100">
               <tr>
-                <th className="p-2 border">Resume ID</th>
+                {/* Removed Resume ID column */}
                 <th className="p-2 border">Filename</th>
                 <th className="p-2 border">Score</th>
                 <th className="p-2 border">Matched Skills</th>
@@ -118,8 +117,8 @@ export default function JobMatching() {
             </thead>
             <tbody>
               {rankedResumes.map((resume) => (
+                /* Use resume_id as the key, but don't display it */
                 <tr key={resume.resume_id}>
-                  <td className="p-2 border">{resume.resume_id}</td>
                   <td className="p-2 border">{resume.filename}</td>
                   <td className="p-2 border text-center">
                     {resume.overlap_score.toFixed(2)}
