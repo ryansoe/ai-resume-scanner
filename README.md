@@ -1,4 +1,4 @@
-# 🏆 AI Resume Screener 🏆
+# 🏆 AI Resume Scanner 🏆
 
 *An end-to-end web application for uploading resumes, automatically extracting skills, and matching them against job descriptions.*
 
@@ -70,4 +70,4 @@ The site is currently **live**, allowing users to **create accounts**, **upload 
 - **LinkedIn**: [linkedin/ryansoe](https://linkedin.com/in/ryan-soe-2596b6309/)
 
 Feel free to open **issues** or **pull requests** if you have suggestions or find any bugs.  
-Enjoy using the **AI Resume Screener**!
+Enjoy using the **AI Resume Scanner**!
