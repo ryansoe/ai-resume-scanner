@@ -19,7 +19,7 @@ export default function Signup() {
     setError('')
     setMessage('')
     try {
-      const res = await fetch('http://127.0.0.1:8000/users/register', {
+      const res = await fetch('https://fastapi-resume-4suu.onrender.com/users/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

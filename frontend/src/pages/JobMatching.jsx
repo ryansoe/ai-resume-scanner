@@ -32,7 +32,7 @@ export default function JobMatching() {
 
     try {
       // 1. Create Job
-      const createRes = await fetch('http://127.0.0.1:8000/jobs/create-job', {
+      const createRes = await fetch('https://fastapi-resume-4suu.onrender.com/jobs/create-job', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export default function JobMatching() {
       setJobId(createData.job_id)    // Save the newly created job_id
 
       // 2. Match Resumes
-      const matchRes = await fetch(`http://127.0.0.1:8000/jobs/match/${createData.job_id}`, {
+      const matchRes = await fetch(`https://fastapi-resume-4suu.onrender.com/jobs/match/${createData.job_id}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`

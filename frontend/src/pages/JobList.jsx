@@ -13,7 +13,7 @@ export default function JobList() {
     }
 
     // Assume you have GET /jobs or similar to list all jobs
-    fetch('http://127.0.0.1:8000/jobs/list', {
+    fetch('https://fastapi-resume-4suu.onrender.com/jobs/list', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())

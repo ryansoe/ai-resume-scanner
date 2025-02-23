@@ -16,18 +16,12 @@ MONGO_URI = os.getenv("MONGO_URI")
 
 app = FastAPI()
 
-# Add this block:
-origins = [
-    "http://localhost:5173",  # Vite default
-    "http://127.0.0.1:5173"   # In case you run with 127.0.0.1
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,        # or ["*"] to allow all
+    allow_origins=["https://ai-resume-scanner-frontend.onrender.com"],
     allow_credentials=True,
-    allow_methods=["*"],          # or ["POST", "GET", "OPTIONS", ...]
-    allow_headers=["*"],          # or list specific headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.include_router(resume_router, prefix="/resumes", tags=["resumes"])

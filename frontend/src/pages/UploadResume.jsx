@@ -28,7 +28,7 @@ export default function UploadResume() {
         formData.append('files', selectedFiles[i])
       }
 
-      const res = await fetch('http://127.0.0.1:8000/resumes/upload-multiple', {
+      const res = await fetch('https://fastapi-resume-4suu.onrender.com/resumes/upload-multiple', {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,

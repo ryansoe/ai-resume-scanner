@@ -16,7 +16,7 @@ export default function Login() {
     e.preventDefault()
     setError('')
     try {
-      const res = await fetch('http://127.0.0.1:8000/users/login', {
+      const res = await fetch('https://fastapi-resume-4suu.onrender.com/users/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({

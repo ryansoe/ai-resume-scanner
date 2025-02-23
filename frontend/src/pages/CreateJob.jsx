@@ -21,7 +21,7 @@ export default function CreateJob() {
     }
 
     try {
-      const res = await fetch('http://127.0.0.1:8000/jobs/create-job', {
+      const res = await fetch('https://fastapi-resume-4suu.onrender.com/jobs/create-job', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

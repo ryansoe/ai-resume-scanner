@@ -13,7 +13,7 @@ export default function MyResumes() {
       return
     }
 
-    fetch('http://127.0.0.1:8000/resumes/my-resumes', {
+    fetch('https://fastapi-resume-4suu.onrender.com/resumes/my-resumes', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())
@@ -30,7 +30,7 @@ export default function MyResumes() {
   const handleDelete = async (resumeId) => {
     if (!token) return
     try {
-      const res = await fetch(`http://127.0.0.1:8000/resumes/delete/${resumeId}`, {
+      const res = await fetch(`https://fastapi-resume-4suu.onrender.com/resumes/delete/${resumeId}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`
